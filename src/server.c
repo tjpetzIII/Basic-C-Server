@@ -27,8 +27,6 @@ int server_init(server_t *server, int port, const char *webroot) {
     server->port    = port;
     server->webroot = webroot;
 
-    /* TODO: setsockopt SO_REUSEADDR */
-    /* TODO: bind() to 0.0.0.0:port */
     /* TODO: listen() with backlog MAX_CONNECTIONS */
 
     // Info about the socket function can be found here https://man7.org/linux/man-pages/man2/socket.2.html
@@ -36,7 +34,21 @@ int server_init(server_t *server, int port, const char *webroot) {
 
     // Info about the setsockopt can be found here https://man7.org/linux/man-pages/man3/setsockopt.3p.html
     int enable = 1;
-    setsockopt(server->socket_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+    if (setsockopt(server->socket_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0){
+      return -1;
+    }
+
+    // Define the address struct
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_port = htons(port);
+
+    if (bind(server->socket_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+        return -1;
+    }
+
+
 
     return 0; /* placeholder */
 }
