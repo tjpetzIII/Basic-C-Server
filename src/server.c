@@ -34,6 +34,10 @@ int server_init(server_t *server, int port, const char *webroot) {
     // Info about the socket function can be found here https://man7.org/linux/man-pages/man2/socket.2.html
     server->socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
+    // Info about the setsockopt can be found here https://man7.org/linux/man-pages/man3/setsockopt.3p.html
+    int enable = 1;
+    setsockopt(server->socket_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+
     return 0; /* placeholder */
 }
 
