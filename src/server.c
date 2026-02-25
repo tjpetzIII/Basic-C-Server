@@ -27,10 +27,12 @@ int server_init(server_t *server, int port, const char *webroot) {
     server->port    = port;
     server->webroot = webroot;
 
-    /* TODO: Create socket with socket() */
     /* TODO: setsockopt SO_REUSEADDR */
     /* TODO: bind() to 0.0.0.0:port */
     /* TODO: listen() with backlog MAX_CONNECTIONS */
+
+    // Info about the socket function can be found here https://man7.org/linux/man-pages/man2/socket.2.html
+    server->socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
     return 0; /* placeholder */
 }
